@@ -1,43 +1,45 @@
-class Node:
+from django.db import models
+from django.contrib.auth.models import AbstractUser
 
-    def __init__(self, data):
+class User(AbstractUser):
+    is_student = models.BooleanField(default=False)
+    is_teacher = models.BooleanField(default=False)
+    first_name = models.CharField(max_length=100)
+    last_name = models.CharField(max_length=100)
 
-        self.left = None
-        self.right = None
-        self.data = data
+class student(models.Model):
+    user = models.OneToOneField(User, on_delete = models.CASCADE, primary_key = True)
+    phone_number = models.CharField(max_length=20)
+    sem = models.CharField(max_length=20)
 
-# Insert method to create nodes
-    def insert(self, data):
+class teacher(models.Model):
+    user = models.OneToOneField(User, on_delete = models.CASCADE, primary_key = True)
+    phone_number = models.CharField(max_length=20)
+    designation = models.CharField(max_length=20)
 
-        if self.data:
-            if data < self.data:
-                if self.left is None:
-                    self.left = Node(data)
-                else:
-                    self.left.insert(data)
-            elif data > self.data:
-                if self.right is None:
-                    self.right = Node(data)
-                else:
-                    self.right.insert(data)
-        else:
-            self.data = data
-# findval method to compare the value with nodes
-    def findval(self, lkpval):
-        if lkpval < self.data:
-            if self.left is None:
-                return str(lkpval)+" Not Found"
-            return self.left.findval(lkpval)
-        elif lkpval > self.data:
-            if self.right is None:
-                return str(lkpval)+" Not Found"
-            return self.right.findval(lkpval)
-        else:
-            print(str(self.data) + ' is found')
-# Print the tree
-    def PrintTree(self):
-        if self.left:
-            self.left.PrintTree()
-        print( self.data)
-        if self.right:
-            self.right.PrintTree()
+
+
+class BSCS(models.Model):
+   class_schedule = models.CharField(max_length=200,null=True)
+   course_work = models.CharField(max_length=200,null=True)
+   sem = models.CharField(max_length=10,null=True)
+   subject_teacher = models.CharField(max_length=200,null=True)
+   
+   def __str__(self):
+      return self.course_work
+
+class announcments(models.Model):
+   user = models.OneToOneField(User, on_delete=models.CASCADE,blank=True,null=True)
+   msg = models.CharField(max_length=200, null=True)
+   date = models.DateField(null=True)
+   
+   def __str__(self):
+      return self.msg
+
+class posts(models.Model):
+   user = models.OneToOneField(User, on_delete=models.CASCADE,blank=True,null=True)
+   title_name = models.CharField(max_length=200,null=True)
+   post_content = models.CharField(max_length=25000, null=True)
+
+   def __str__(self):
+      return self.title_name
